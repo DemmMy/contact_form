@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% block title 'Demandes de contact' %}
+{% block body %}
+    <div class = "container-lg" style="margin-top: 1rem">
+        <h1>Toutes les demandes de contact</h1>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% if demandes is not empty %}
+        <table class="table table-striped" style="margin-top: 2rem">
+            <thead class="thead-light">
+            <tr>
+                <th  scope="col">Etat</th>
+                <th  scope="col">Nom</th>
+                <th  scope="col">Prenom</th>
+                <th  scope="col">Email</th>
+                <th  scope="col">Question</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for demande in demandes %}
+            <tr>
+                <td>{% if demande.lu %}Lu{% endif %}{% if demande.lu ==false%}Non lu{% endif %}</td>
+                <td>{{ demande.nom }}</td>
+                <td>{{ demande.prenom }}</td>
+                <td>{{ demande.email }}</td>
+                <td>{{ demande.question }}</td>
+                <td> <a class="btn btn-primary" href="{{ path('admin.demande.show', {id : demande.id, slug : demande.slug}) }}">Détails</a>
+                <form method="post" action="{{ path('admin.demande.lecture', {id : demande.id}) }}" style="display: inline-block">
+                    <input type="hidden" name="_token_update" value="{{ csrf_token('update' ~ demande.id) }}">
+                    <input type="hidden" name="_method" value="POST">
+                    <button class="btn btn-primary">{% if demande.lu %}Marquer non lu{% endif %}{% if demande.lu ==false%}Marquer lu{% endif %}</button>
+                </form>
+
+                <form method="post" action="{{ path('admin.demande.delete', {id : demande.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger">Supprimer</button>
+                </form>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+            </tbody>
+
+        </table>
+
+        {% endif %}
+    </div>
+    {% if demandes is empty %}
+    <div class="container">
+        <p>Aucune demande dans la base de données</p>
+    </div>
+    {% endif %}
+
+{% endblock %}

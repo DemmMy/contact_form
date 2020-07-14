@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Demande
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h2>Détails</h2>
+        <h5>{% if demande.lu %}Lu{% endif %}{% if demande.lu ==false%}Non lu{% endif %}</h5>
+        <table class="table table-stripped">
+            <tr>
+                <td>Nom</td>
+                <td>{{ demande.nom }}</td>
+            </tr>
+            <tr>
+                <td>Prénom</td>
+                <td>{{ demande.prenom }}</td>
+            </tr>
+            <tr>
+                <td>Mail</td>
+                <td>{{ demande.email }}</td>
+            </tr>
+            <tr>
+                <td>Question</td>
+                <td>{{ demande.question }}</td>
+            </tr>
+            <tr>
+                <td>Détails</td>
+                <td>{{ demande.details }}</td>
+            </tr>
+        </table>
+        <form method="post" action="{{ path('admin.demande.lecture', {id : demande.id}) }}" style="display: inline-block">
+            <input type="hidden" name="_token_update" value="{{ csrf_token('update' ~ demande.id) }}">
+            <input type="hidden" name="_method" value="POST">
+            <button class="btn btn-primary">{% if demande.lu %}Marquer non lu{% endif %}{% if demande.lu ==false%}Marquer lu{% endif %}</button>
+        </form>
+        <form method="post" action="{{ path('admin.demande.delete', {id : demande.id}) }}" style="display: inline-block" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="btn btn-danger">Supprimer</button>
+        </form>
+       </div>
+
+{% endblock %}
+
+
+
+
